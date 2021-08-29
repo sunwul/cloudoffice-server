@@ -1,6 +1,6 @@
 # CloudOffice服务端
 
-## 知识点梳理
+## 服务端架构
 > 1. SpringBoot(整体框架)
 > 2. Mybatis-Plus(单表CURD免写SQL,提高开发效率)
 > 3. AutoGenerator(Mybatis-Plus提供的代码生成器) 
