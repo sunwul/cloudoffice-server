@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: CloudOffice-Server
+    version: 1.0
+  # 环境设置
+  profiles:
+    active: dev

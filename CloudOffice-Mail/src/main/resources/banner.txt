@@ -1,0 +1,15 @@
+${AnsiColor.BRIGHT_MAGENTA}                                           __
+${AnsiColor.BRIGHT_GREEN}     _____  __  __ ____   __    __ __  __ ${AnsiColor.BRIGHT_MAGENTA}/  /
+${AnsiColor.BRIGHT_GREEN}    /  ___// / / // ${AnsiColor.BLUE}__${AnsiColor.BRIGHT_GREEN} \ / /${AnsiColor.BLUE}_${AnsiColor.BRIGHT_GREEN}  / // / / //  /
+${AnsiColor.BLUE}    \__  \/ /_/ // / / // // \/ // /_/ //  /
+${AnsiColor.RED}   /_____/\__ _// / / / \__/\__/ \___ //__/
+${AnsiColor.BLUE}           ${spring.application.name}${AnsiColor.RED}_${spring.profiles.active}_${AnsiColor.BRIGHT_MAGENTA}ver${spring.application.version}
+
+${AnsiColor.BLUE}  ______  __        ______    __    __   _______    ______    _______  _______  __    ______  _______
+ ${AnsiColor.BRIGHT_MAGENTA}/      ||  |      /  __  \  |  |  |  | |       \  /  __  \  |   ____||   ____||  |  /      ||   ____|
+${AnsiColor.BRIGHT_GREEN}|  ,----'|  |     |  |  |  | |  |  |  | |  .--.  ||  |  |  | |  |__   |  |__   |  | |  ,----'|  |__
+${AnsiColor.BRIGHT_MAGENTA}|  |     |  |     |  |  |  | |  |  |  | |  |  |  ||  |  |  | |   __|  |   __|  |  | |  |     |   __|
+${AnsiColor.BRIGHT_GREEN}|  `----.|  `----.|  `--'  | |  `--'  | |  '--'  ||  `--'  | |  |     |  |     |  | |  `----.|  |____
+${AnsiColor.BLUE} \______||_______| \______/   \______/  |_______/  \______/  |__|     |__|     |__|  \______||_______|
+
+

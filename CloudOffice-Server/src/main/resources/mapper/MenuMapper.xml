@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwul.cloudoffice.server.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunwul.cloudoffice.server.entity.Menu">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="path" property="path"/>
+        <result column="component" property="component"/>
+        <result column="name" property="name"/>
+        <result column="iconCls" property="iconCls"/>
+        <result column="keep_alive" property="keep_alive"/>
+        <result column="require_auth" property="require_auth"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="enabled" property="enabled"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, url, path, component, name, iconCls, keep_alive, require_auth, parent_id, enabled
+    </sql>
+
+    <!-- 设置子菜单列表的属性 -->
+    <resultMap id="Menus" type="com.sunwul.cloudoffice.server.entity.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.sunwul.cloudoffice.server.entity.Menu">
+            <id column="id2" property="id"/>
+            <result column="url2" property="url"/>
+            <result column="path2" property="path"/>
+            <result column="component2" property="component"/>
+            <result column="name2" property="name"/>
+            <result column="iconCls2" property="iconCls"/>
+            <result column="keep_alive2" property="keep_alive"/>
+            <result column="require_auth2" property="require_auth"/>
+            <result column="parent_id2" property="parent_id"/>
+            <result column="enabled2" property="enabled"/>
+        </collection>
+    </resultMap>
+    <!-- 根据用户ID查询菜单列表 一次性将用户拥有的所有菜单列表都查询出来,避免多次读取数据库-->
+    <select id="getMenusByAdminId" resultMap="Menus">
+        select DISTINCT m1.*,
+        m2.id as id2,
+        m2.url as url2,
+        m2.path as path2,
+        m2.component as component2,
+        m2.`name` as name2,
+        m2.iconCls as iconCls2,
+        m2.keep_alive as keep_alive2,
+        m2.require_auth as require_auth2,
+        m2.parent_id as parent_id2,
+        m2.enabled as enabled2
+        from t_menu m1,
+        t_menu m2,
+        t_admin_role ar,
+        t_menu_role mr
+        where m1.id = m2.parent_id
+        and m2.id = mr.mid
+        and mr.rid = ar.rid
+        and ar.admin_id = #{id}
+        and m2.enabled = true
+        <!-- 去掉最顶级菜单, 否则前端动态添加路由会异常 -->
+        and m1.component is not null
+        ORDER BY m2.id
+    </select>
+    <!-- 设置菜单角色字段 -->
+    <resultMap id="MenusWithRole" type="com.sunwul.cloudoffice.server.entity.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.sunwul.cloudoffice.server.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnamZh" property="name_zh"/>
+        </collection>
+    </resultMap>
+    <!-- 获取菜单列表与对应的角色 菜单列表与角色根据角色菜单表对应,都查询出来,结果就包含菜单,菜单所对应的角色-->
+    <select id="getMenusWithRole" resultMap="MenusWithRole">
+        select m.*,
+        r.id as rid,
+        r.`name` as rname,
+        r.name_zh as rnamZh
+        from t_menu m,
+        t_menu_role mr,
+        t_role r
+        where m.id = mr.mid
+        and r.id = mr.rid
+        ORDER BY m.id
+    </select>
+    <!-- 设置菜单层级列表 -->
+    <resultMap id="MenusWithChildren" type="com.sunwul.cloudoffice.server.entity.Menu" extends="BaseResultMap">
+        <!-- 一级菜单 -->
+        <id column="id1" property="id"/>
+        <result column="name1" property="name"/>
+        <collection property="children" ofType="com.sunwul.cloudoffice.server.entity.Menu">
+            <!-- 二级菜单 -->
+            <id column="id2" property="id"/>
+            <result column="name2" property="name"/>
+            <collection property="children" ofType="com.sunwul.cloudoffice.server.entity.Menu">
+                <!-- 三级菜单 -->
+                <id column="id3" property="id"/>
+                <result column="name3" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <!-- 查询所有菜单列表 层级-->
+    <select id="getAllMenus" resultMap="MenusWithChildren">
+        select m1.id as id1,
+        m1.`name` as name1,
+        m2.id as id2,
+        m2.`name` as name2,
+        m3.id as id3,
+        m3.`name` as name3
+        from t_menu m1,
+        t_menu m2,
+        t_menu m3
+        where m1.id = m2.parent_id
+        and m2.id = m3.parent_id
+        and m3.enabled = true
+    </select>
+
+</mapper>
