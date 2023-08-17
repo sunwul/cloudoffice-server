@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwul.cloudoffice.server.mapper.SalaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunwul.cloudoffice.server.entity.Salary">
+        <id column="id" property="id"/>
+        <result column="basicSalary" property="basicSalary"/>
+        <result column="bonus" property="bonus"/>
+        <result column="lunchSalary" property="lunchSalary"/>
+        <result column="trafficSalary" property="trafficSalary"/>
+        <result column="allSalary" property="allSalary"/>
+        <result column="pensionBase" property="pensionBase"/>
+        <result column="pensionPer" property="pensionPer"/>
+        <result column="create_date" property="createDate"/>
+        <result column="medicalBase" property="medicalBase"/>
+        <result column="medicalPer" property="medicalPer"/>
+        <result column="accumulationFundBase" property="accumulationFundBase"/>
+        <result column="accumulationFundPer" property="accumulationFundPer"/>
+        <result column="name" property="name"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, basicSalary, bonus, lunchSalary, trafficSalary, allSalary, pensionBase, pensionPer, createDate, medicalBase, medicalPer, accumulationFundBase, accumulationFundPer, name
+    </sql>
+    <resultMap id="EmployeeWithSalary" type="com.sunwul.cloudoffice.server.entity.Employee">
+        <id column="eid" property="id"/>
+        <result column="ename" property="name"/>
+        <result column="ework_id" property="work_id"/>
+        <result column="egender" property="gender"/>
+        <result column="email" property="email"/>
+        <result column="ephone" property="phone"/>
+        <association property="salary" javaType="com.sunwul.cloudoffice.server.entity.Salary">
+            <id column="sid" property="id"/>
+            <result column="sname" property="name"/>
+            <result column="sbasicSalary" property="basicSalary"/>
+            <result column="sbonus" property="bonus"/>
+            <result column="slunchSalary" property="lunchSalary"/>
+            <result column="strafficSalary" property="trafficSalary"/>
+            <result column="sallSalary" property="allSalary"/>
+            <result column="spensionBase" property="pensionBase"/>
+            <result column="spensionPer" property="pensionPer"/>
+            <result column="smedicalBase" property="medicalBase"/>
+            <result column="smedicalPer" property="medicalPer"/>
+            <result column="saccumulationFundBase" property="accumulationFundBase"/>
+            <result column="saccumulationFundPer" property="accumulationFundPer"/>
+        </association>
+        <association property="department" javaType="com.sunwul.cloudoffice.server.entity.Department">
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+    <!-- 获取所有员工账套(分页) -->
+    <select id="getEmployeeWithSalary" resultMap="EmployeeWithSalary">
+        select e.id                   as eid,
+               e.name                 as ename,
+               e.work_id              as ework_id,
+               e.gender               as egender,
+               e.email                as email,
+               e.phone                as ephone,
+               d.`name`               as dname,
+               s.id                   as sid,
+               s.`name`               as sname,
+               s.basicSalary          as sbasicSalary,
+               s.bonus                as sbonus,
+               s.lunchSalary          as slunchSalary,
+               s.trafficSalary        as strafficSalary,
+               s.allSalary            as sallSalary,
+               s.pensionBase          as spensionBase,
+               s.pensionPer           as spensionPer,
+               s.medicalBase          as smedicalBase,
+               s.medicalPer           as smedicalPer,
+               s.accumulationFundBase as saccumulationFundBase,
+               s.accumulationFundPer  as saccumulationFundPer
+        from t_employee e
+                 LEFT JOIN t_salary s on e.salary_id = s.id
+                 LEFT JOIN t_department d on e.department_id = d.id
+    </select>
+
+</mapper>

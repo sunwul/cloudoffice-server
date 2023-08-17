@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwul.cloudoffice.server.mapper.EmployeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunwul.cloudoffice.server.entity.Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="birthday" property="birthday"/>
+        <result column="id_card" property="id_card"/>
+        <result column="wedlock" property="wedlock"/>
+        <result column="nation_id" property="nation_id"/>
+        <result column="native_place" property="native_place"/>
+        <result column="politic_id" property="politic_id"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="department_id" property="department_id"/>
+        <result column="job_level_id" property="job_level_id"/>
+        <result column="pos_id" property="pos_id"/>
+        <result column="engage_form" property="engage_form"/>
+        <result column="tiptop_degree" property="tiptop_degree"/>
+        <result column="specialty" property="specialty"/>
+        <result column="school" property="school"/>
+        <result column="begin_date" property="begin_date"/>
+        <result column="work_state" property="work_state"/>
+        <result column="work_id" property="work_id"/>
+        <result column="contract_term" property="contract_term"/>
+        <result column="conversion_time" property="conversion_time"/>
+        <result column="not_work_date" property="not_work_date"/>
+        <result column="begin_contract" property="begin_contract"/>
+        <result column="end_contract" property="end_contract"/>
+        <result column="work_age" property="work_age"/>
+        <result column="salary_id" property="salary_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, gender, birthday, id_card, wedlock, nation_id, native_place, politic_id, email, phone, address, department_id, job_level_id, pos_id, engage_form, tiptop_degree, specialty, school, begin_date, work_state, work_id, contract_term, conversion_time, not_work_date, begin_contract, end_contract, work_age, salary_id
+    </sql>
+    <resultMap id="EmployeeInfo" type="com.sunwul.cloudoffice.server.entity.Employee" extends="BaseResultMap">
+        <association property="nation" javaType="com.sunwul.cloudoffice.server.entity.Nation">
+            <id column="nid" property="id"/>
+            <result column="nname" property="name"/>
+        </association>
+        <association property="politicsStatus" javaType="com.sunwul.cloudoffice.server.entity.PoliticsStatus">
+            <id column="polid" property="id"/>
+            <result column="polname" property="name"/>
+        </association>
+        <association property="department" javaType="com.sunwul.cloudoffice.server.entity.Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+        <association property="joblevel" javaType="com.sunwul.cloudoffice.server.entity.Joblevel">
+            <id column="jid" property="id"/>
+            <result column="jname" property="name"/>
+        </association>
+        <association property="position" javaType="com.sunwul.cloudoffice.server.entity.Position">
+            <id column="posid" property="id"/>
+            <result column="posname" property="name"/>
+        </association>
+    </resultMap>
+    <!-- 获取所有员工(分页) -->
+    <select id="getEmployeeByPage" resultMap="EmployeeInfo">
+        SELECT e.*,
+        n.id AS nid,
+        n.`name` AS nname,
+        pol.id AS polid,
+        pol.`name` AS polname,
+        d.id AS did,
+        d.`name` AS dname,
+        j.id AS jid,
+        j.`name` AS jname,
+        pos.id AS posid,
+        pos.`name` AS posname
+        FROM t_employee e,
+        t_nation n,
+        t_politics_status pol,
+        t_department d,
+        t_joblevel j,
+        t_position pos
+        WHERE e.nation_id = n.id
+        AND e.politic_id = pol.id
+        AND e.department_id = d.id
+        AND e.job_level_id = j.id
+        AND e.pos_id = pos.id
+        <if test="employee.name!=null and employee.name!=''">
+            AND e.`name` LIKE CONCAT('%',#{employee.name}, '%')
+        </if>
+        <if test="employee.politic_id!=null and employee.politic_id!=''">
+            AND e.politic_id = #{employee.politic_id}
+        </if>
+        <if test="employee.nation_id!=null and employee.nation_id!=''">
+            AND e.nation_id = #{employee.nation_id}
+        </if>
+        <if test="employee.job_level_id!=null and employee.job_level_id!=''">
+            AND e.job_level_id = #{employee.job_level_id}
+        </if>
+        <if test="employee.pos_id!=null and employee.pos_id!=''">
+            AND e.pos_id = #{employee.pos_id}
+        </if>
+        <if test="employee.engage_form!=null and employee.engage_form!=''">
+            AND e.engage_form = #{employee.engage_form}
+        </if>
+        <if test="employee.department_id!=null and employee.department_id!=''">
+            AND e.department_id = #{employee.department_id}
+        </if>
+        <if test="beginDateScope !=null and beginDateScope.length==2">
+            AND e.begin_date BETWEEN #{beginDateScope[0]} and #{beginDateScope[1]}
+        </if>
+        ORDER BY e.id
+    </select>
+
+    <!-- 查询员工-->
+    <select id="getEmployee" resultMap="EmployeeInfo">
+        SELECT e.*,
+        n.id AS nid,
+        n.`name` AS nname,
+        pol.id AS polid,
+        pol.`name` AS polname,
+        d.id AS did,
+        d.`name` AS dname,
+        j.id AS jid,
+        j.`name` AS jname,
+        pos.id AS posid,
+        pos.`name` AS posname
+        FROM t_employee e,
+        t_nation n,
+        t_politics_status pol,
+        t_department d,
+        t_joblevel j,
+        t_position pos
+        WHERE e.nation_id = n.id
+        AND e.politic_id = pol.id
+        AND e.department_id = d.id
+        AND e.job_level_id = j.id
+        AND e.pos_id = pos.id
+        <!-- 当传入ID时查询此员工的信息,当未传入ID时查询所有员工信息 -->
+        <if test="id!=null">
+            AND e.id = #{id}
+        </if>
+        ORDER BY e.id
+    </select>
+
+</mapper>

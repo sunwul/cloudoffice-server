@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwul.cloudoffice.server.mapper.DepartmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunwul.cloudoffice.server.entity.Department">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="dep_path" property="dep_path"/>
+        <result column="enabled" property="enabled"/>
+        <result column="is_parent" property="is_parent"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, parent_id, dep_path, enabled, is_parent
+    </sql>
+
+    <resultMap id="DepartmentWithChildren" type="com.sunwul.cloudoffice.server.entity.Department"
+               extends="BaseResultMap">
+        <!-- 在获取所有部门查询后,此时查询结果中已经有了children子部门列表,
+        这里用子部门列表的id去调用getAllDepartments方法,拿到parent_id=id下的所有信息,相当于一个递归
+        此处与获取菜单类似,只是换了一种方法-->
+        <collection property="children" ofType="com.sunwul.cloudoffice.server.entity.Department"
+                    select="com.sunwul.cloudoffice.server.mapper.DepartmentMapper.getAllDepartments" column="id">
+        </collection>
+    </resultMap>
+    <!-- 获取所有部门 最开始getAllDepartments传了一个-1,此时会先去查parent_id为-1下的所有部门ID-->
+    <select id="getAllDepartments" resultMap="DepartmentWithChildren">
+        select
+        <include refid="Base_Column_List"/>
+        from t_department where parent_id = #{parent_id}
+    </select>
+    <!-- 添加部门
+     调用MySQL存储过程 CALLABLE
+     mode=IN 表示是一个输入参数
+     jdbcType=VARCHAR 字符串类型
+     mode=OUT 表示是一个输出参数-->
+    <select id="addDep" statementType="CALLABLE">
+        call addDep(#{name,mode=IN,jdbcType=VARCHAR}, #{parent_id,mode=IN,jdbcType=INTEGER},
+                    #{enabled,mode=IN,jdbcType=VARCHAR}, #{result,mode=OUT,jdbcType=INTEGER},
+                    #{id,mode=OUT,jdbcType=INTEGER})
+    </select>
+    <!-- 删除部门
+     调用MySQL存储过程 CALLABLE-->
+    <select id="deleteDepartment" statementType="CALLABLE">
+        call deleteDep(#{id,mode=IN,jdbcType=INTEGER}, #{result,mode=OUT,jdbcType=INTEGER})
+    </select>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunwul.cloudoffice.server.mapper.AdminMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunwul.cloudoffice.server.entity.Admin">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="telephone" property="telephone"/>
+        <result column="address" property="address"/>
+        <result column="enabled" property="enabled"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="user_face" property="user_face"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, telephone, address, enabled, username, password, user_face, remark
+    </sql>
+    <resultMap id="AdminWithRole" type="com.sunwul.cloudoffice.server.entity.Admin" extends="BaseResultMap">
+        <collection property="roles" ofType="com.sunwul.cloudoffice.server.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rname_zh" property="name_zh"/>
+        </collection>
+    </resultMap>
+    <!-- 获取所有操作员 -->
+    <select id="getAllAdmins" resultMap="AdminWithRole">
+        SELECT a.*,
+        r.id as rid,
+        r.`name` as rname,
+        r.name_zh as rname_zh
+        FROM t_admin a
+        LEFT JOIN t_admin_role ar ON a.id = ar.admin_id
+        LEFT JOIN t_role r ON r.id = ar.rid
+        WHERE a.id != #{id}
+        <if test="keywords!=null and keywords!=''">
+            AND a.`name` LIKE CONCAT('%', #{keywords}, '%')
+        </if>
+        ORDER BY a.id
+    </select>
+
+</mapper>

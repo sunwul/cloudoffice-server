@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>入职欢迎邮件</title>
+</head>
+
+<body>
+<div class="main">
+    <h4>欢迎<span th:text="${name}"></span>加入XXX大家庭</h4>
+    <h5>您的入职信息如下:</h5>
+    <div class="info">
+        <table border="1" width="200px">
+            <tr>
+                <td>姓名:</td>
+                <td th:text="${name}"></td>
+            </tr>
+            <tr>
+                <td>职位:</td>
+                <td th:text="${posName}"></td>
+            </tr>
+            <tr>
+                <td>职称:</td>
+                <td th:text="${jobLevelName}"></td>
+            </tr>
+            <tr>
+                <td>部门:</td>
+                <td th:text="${departmentName}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="note">
+        <span>公司核心价值观:</span><br/>
+        <span>担当——恪守职责，敢于承担</span><br>
+        <span>专注——聚焦目标，勤于实践</span><br>
+        <span>进取——开拓创新，勇于突破</span><br>
+        <span>共赢——团结协作，共享同荣</span>
+    </div>
+</div>
+</body>
+<style>
+    * {
+        text-align: center;
+        font-size: medium;
+        font-family: 'Courier New', Courier, monospace;
+        color: rgb(2, 2, 2);
+    }
+
+    .main {
+        background: url("https://z3.ax1x.com/2021/03/28/cSNjUA.jpg");
+        background-size: cover;
+        height: 100%;
+        width: 100%;
+    }
+
+    .info {
+        border: 0px solid red;
+        padding: 0 0 0 42%;
+        font-weight: 800;
+    }
+
+    .info table {
+        vertical-align: middle;
+        background-color: aliceblue;
+    }
+
+    .note span {
+        font-size: medium;
+        font-weight: 900;
+        background-color: aliceblue;
+    }
+</style>
+
+</html>
