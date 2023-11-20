@@ -3,7 +3,6 @@ package com.sunwul.cloudoffice.server.common.exception;
 import com.mysql.cj.exceptions.CJCommunicationsException;
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import com.sunwul.cloudoffice.server.common.response.ResponseBean;
-import org.csource.common.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpConnectException;
